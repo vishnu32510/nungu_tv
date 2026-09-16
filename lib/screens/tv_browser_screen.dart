@@ -851,52 +851,63 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
               Positioned(
                 top: 0,
                 right: 24,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    setState(() => _showToolbar = !_showToolbar);
-                  },
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1E293B).withValues(alpha: 0.95),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                      border: Border.all(
-                        color: const Color(0xFFE50914).withValues(alpha: 0.7),
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFE50914).withValues(alpha: 0.35),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
+                child: Semantics(
+                  button: true,
+                  label: _showToolbar ? 'Hide Bar' : 'Menu / Bar',
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.95),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
                         ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          _showToolbar
-                              ? Icons.keyboard_arrow_up_rounded
-                              : Icons.menu_rounded,
-                          size: 18,
-                          color: Colors.white,
+                        border: Border.all(
+                          color: const Color(0xFFE50914).withValues(alpha: 0.7),
+                          width: 1.5,
                         ),
-                        const SizedBox(width: 6),
-                        Text(
-                          _showToolbar ? 'Hide Bar' : 'Menu / Bar (M)',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFE50914).withValues(alpha: 0.35),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() => _showToolbar = !_showToolbar);
+                        },
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _showToolbar
+                                    ? Icons.keyboard_arrow_up_rounded
+                                    : Icons.menu_rounded,
+                                size: 18,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                _showToolbar ? 'Hide Bar' : 'Menu / Bar (M)',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -1212,15 +1223,12 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                   const SizedBox(height: 36),
 
                   // Primary Launch CTA Button
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () => _openUrl(initialUrl),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 20,
-                        ),
+                  Semantics(
+                    button: true,
+                    label: 'Launch Web Player',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Ink(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [Color(0xFFE50914), Color(0xFFB81D24)],
@@ -1237,31 +1245,41 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                             ),
                           ],
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(
-                              Icons.play_circle_fill_rounded,
-                              size: 28,
-                              color: Colors.white,
+                        child: InkWell(
+                          onTap: () => _openUrl(initialUrl),
+                          borderRadius: BorderRadius.circular(16),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 20,
                             ),
-                            SizedBox(width: 12),
-                            Text(
-                              'Launch Web Player',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                              ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Icon(
+                                  Icons.play_circle_fill_rounded,
+                                  size: 28,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Launch Web Player',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Icon(
+                                  Icons.open_in_new_rounded,
+                                  size: 20,
+                                  color: Colors.white70,
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 8),
-                            Icon(
-                              Icons.open_in_new_rounded,
-                              size: 20,
-                              color: Colors.white70,
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
