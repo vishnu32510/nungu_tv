@@ -92,68 +92,70 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
       try {
         controller.setNavigationDelegate(
           NavigationDelegate(
-          onProgress: (int progress) {
-            setState(() {
-              _loadingProgress = progress / 100.0;
-            });
-          },
-          onPageStarted: (String url) {
-            setState(() {
-              _isLoading = true;
-              _errorMessage = null;
-            });
-          },
-          onPageFinished: (String url) {
-            setState(() {
-              _isLoading = false;
-            });
-            _injectTvOptimizations();
-          },
-          onWebResourceError: (WebResourceError error) {
-            if (error.isForMainFrame ?? true) {
+            onProgress: (int progress) {
+              setState(() {
+                _loadingProgress = progress / 100.0;
+              });
+            },
+            onPageStarted: (String url) {
+              setState(() {
+                _isLoading = true;
+                _errorMessage = null;
+              });
+            },
+            onPageFinished: (String url) {
               setState(() {
                 _isLoading = false;
-                _errorMessage =
-                    'Unable to load media content (${error.description}).\nPlease check your internet connection.';
               });
-            }
-          },
-          onNavigationRequest: (NavigationRequest request) {
-            final uri = Uri.tryParse(request.url);
-            if (uri != null) {
-              final host = uri.host.toLowerCase();
-
-              // Whitelist allowed legitimate domains
-              final isAllowed = host.contains('einthusan') ||
-                  host.contains('accounts.google') ||
-                  host.contains('facebook.com') ||
-                  host.contains('gstatic.com') ||
-                  request.url.startsWith('about:blank');
-
-              // Blacklist known ad / popunder / redirect networks
-              final isAdDomain = host.contains('doubleclick') ||
-                  host.contains('googlesyndication') ||
-                  host.contains('adnxs') ||
-                  host.contains('vntsm') ||
-                  host.contains('inmobi') ||
-                  host.contains('getpublica') ||
-                  host.contains('popads') ||
-                  host.contains('onclick') ||
-                  host.contains('adsterra') ||
-                  host.contains('propeller') ||
-                  host.contains('bet365') ||
-                  host.contains('adservice') ||
-                  host.contains('traffic');
-
-              if (!isAllowed || isAdDomain) {
-                // Block navigation to external ad / popunder URL
-                return NavigationDecision.prevent;
+              _injectTvOptimizations();
+            },
+            onWebResourceError: (WebResourceError error) {
+              if (error.isForMainFrame ?? true) {
+                setState(() {
+                  _isLoading = false;
+                  _errorMessage =
+                      'Unable to load media content (${error.description}).\nPlease check your internet connection.';
+                });
               }
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      );
+            },
+            onNavigationRequest: (NavigationRequest request) {
+              final uri = Uri.tryParse(request.url);
+              if (uri != null) {
+                final host = uri.host.toLowerCase();
+
+                // Whitelist allowed legitimate domains
+                final isAllowed =
+                    host.contains('einthusan') ||
+                    host.contains('accounts.google') ||
+                    host.contains('facebook.com') ||
+                    host.contains('gstatic.com') ||
+                    request.url.startsWith('about:blank');
+
+                // Blacklist known ad / popunder / redirect networks
+                final isAdDomain =
+                    host.contains('doubleclick') ||
+                    host.contains('googlesyndication') ||
+                    host.contains('adnxs') ||
+                    host.contains('vntsm') ||
+                    host.contains('inmobi') ||
+                    host.contains('getpublica') ||
+                    host.contains('popads') ||
+                    host.contains('onclick') ||
+                    host.contains('adsterra') ||
+                    host.contains('propeller') ||
+                    host.contains('bet365') ||
+                    host.contains('adservice') ||
+                    host.contains('traffic');
+
+                if (!isAllowed || isAdDomain) {
+                  // Block navigation to external ad / popunder URL
+                  return NavigationDecision.prevent;
+                }
+              }
+              return NavigationDecision.navigate;
+            },
+          ),
+        );
       } catch (_) {}
     } else {
       // Web platforms finish loading once iframe URL is assigned
@@ -173,7 +175,6 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
     _controller = controller;
   }
 
-
   Future<void> _safeRunJavaScript(String script) async {
     if (kIsWeb) return;
     try {
@@ -185,7 +186,7 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
     if (kIsWeb) return false;
     try {
       if (_controller == null) return false;
-    return await _controller!.canGoBack();
+      return await _controller!.canGoBack();
     } catch (_) {
       return false;
     }
@@ -195,7 +196,7 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
     if (kIsWeb) return false;
     try {
       if (_controller == null) return false;
-    return await _controller!.canGoForward();
+      return await _controller!.canGoForward();
     } catch (_) {
       return false;
     }
@@ -523,7 +524,8 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
     final x = _cursorPos.dx.toInt();
     final y = _cursorPos.dy.toInt();
 
-    final clickScript = '''
+    final clickScript =
+        '''
       (function() {
         var x = $x;
         var y = $y;
@@ -561,7 +563,8 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
     final key = event.logicalKey;
 
     // Detect direction keys
-    final isDirectionKey = key == LogicalKeyboardKey.arrowUp ||
+    final isDirectionKey =
+        key == LogicalKeyboardKey.arrowUp ||
         key == LogicalKeyboardKey.arrowDown ||
         key == LogicalKeyboardKey.arrowLeft ||
         key == LogicalKeyboardKey.arrowRight;
@@ -717,7 +720,9 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
             children: [
               // Main WebView
               Positioned.fill(
-                child: _controller != null ? WebViewWidget(controller: _controller!) : const SizedBox.shrink(),
+                child: _controller != null
+                    ? WebViewWidget(controller: _controller!)
+                    : const SizedBox.shrink(),
               ),
 
               // Loading Progress Bar
@@ -851,14 +856,13 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
               Positioned(
                 top: 0,
                 right: 24,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    setState(() => _showToolbar = !_showToolbar);
-                  },
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                  child: Ink(
                     decoration: BoxDecoration(
                       color: const Color(0xFF1E293B).withValues(alpha: 0.95),
                       borderRadius: const BorderRadius.only(
@@ -871,32 +875,49 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFE50914).withValues(alpha: 0.35),
+                          color: const Color(
+                            0xFFE50914,
+                          ).withValues(alpha: 0.35),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          _showToolbar
-                              ? Icons.keyboard_arrow_up_rounded
-                              : Icons.menu_rounded,
-                          size: 18,
-                          color: Colors.white,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                      onTap: () {
+                        setState(() => _showToolbar = !_showToolbar);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
-                        const SizedBox(width: 6),
-                        Text(
-                          _showToolbar ? 'Hide Bar' : 'Menu / Bar (M)',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _showToolbar
+                                  ? Icons.keyboard_arrow_up_rounded
+                                  : Icons.menu_rounded,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              _showToolbar ? 'Hide Bar' : 'Menu / Bar (M)',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -931,152 +952,159 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-          // Logo & Title
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE50914),
-                  borderRadius: BorderRadius.circular(6),
+            // Logo & Title
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE50914),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Icon(
+                    Icons.movie_filter_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.movie_filter_rounded,
-                  color: Colors.white,
-                  size: 20,
+                const SizedBox(width: 10),
+                const Text(
+                  'NUNGU TV',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              const Text(
-                'NUNGU TV',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(width: 24),
+              ],
+            ),
+            const SizedBox(width: 24),
 
-          // Navigation buttons
-          _buildToolbarButton(
-            icon: Icons.arrow_back_rounded,
-            label: 'Back',
-            onTap: () async {
-              if (await _safeCanGoBack()) {
-                _safeGoBack();
-              }
-            },
-          ),
-          const SizedBox(width: 8),
-          _buildToolbarButton(
-            icon: Icons.arrow_forward_rounded,
-            label: 'Forward',
-            onTap: () async {
-              if (await _safeCanGoForward()) {
-                _safeGoForward();
-              }
-            },
-          ),
-          const SizedBox(width: 8),
-          _buildToolbarButton(
-            icon: Icons.refresh_rounded,
-            label: 'Reload',
-            onTap: () => _safeReload(),
-          ),
-          const SizedBox(width: 8),
-          _buildToolbarButton(
-            icon: Icons.home_rounded,
-            label: 'Tamil Home',
-            onTap: () => _controller?.loadRequest(Uri.parse(initialUrl)),
-          ),
-          const SizedBox(width: 8),
-          _buildToolbarButton(
-            icon: Icons.verified_user_rounded,
-            label: _accountEmail.isNotEmpty ? 'Auto-Login (${_accountEmail.split("@").first})' : 'Login',
-            color: const Color(0xFF10B981),
-            onTap: () => _triggerAutoLogin(showToast: true),
-          ),
-
-          const SizedBox(width: 32),
-
-          // Mode Switch (Cursor vs Direct Scroll)
-          _buildToolbarButton(
-            icon: _isCursorMode
-                ? Icons.mouse_rounded
-                : Icons.swap_vert_rounded,
-            label: _isCursorMode ? 'Cursor Mode' : 'Scroll Mode',
-            color: _isCursorMode
-                ? const Color(0xFF3B82F6)
-                : const Color(0xFF10B981),
-            onTap: () {
-              setState(() {
-                _isCursorMode = !_isCursorMode;
-              });
-            },
-          ),
-          const SizedBox(width: 8),
-
-          // Cursor Speed Switcher
-          if (_isCursorMode)
+            // Navigation buttons
             _buildToolbarButton(
-              icon: Icons.speed_rounded,
-              label: '${_cursorSpeed == 10.0 ? "1x" : _cursorSpeed == 16.0 ? "1.5x" : "2.5x"} Speed',
+              icon: Icons.arrow_back_rounded,
+              label: 'Back',
+              onTap: () async {
+                if (await _safeCanGoBack()) {
+                  _safeGoBack();
+                }
+              },
+            ),
+            const SizedBox(width: 8),
+            _buildToolbarButton(
+              icon: Icons.arrow_forward_rounded,
+              label: 'Forward',
+              onTap: () async {
+                if (await _safeCanGoForward()) {
+                  _safeGoForward();
+                }
+              },
+            ),
+            const SizedBox(width: 8),
+            _buildToolbarButton(
+              icon: Icons.refresh_rounded,
+              label: 'Reload',
+              onTap: () => _safeReload(),
+            ),
+            const SizedBox(width: 8),
+            _buildToolbarButton(
+              icon: Icons.home_rounded,
+              label: 'Tamil Home',
+              onTap: () => _controller?.loadRequest(Uri.parse(initialUrl)),
+            ),
+            const SizedBox(width: 8),
+            _buildToolbarButton(
+              icon: Icons.verified_user_rounded,
+              label: _accountEmail.isNotEmpty
+                  ? 'Auto-Login (${_accountEmail.split("@").first})'
+                  : 'Login',
+              color: const Color(0xFF10B981),
+              onTap: () => _triggerAutoLogin(showToast: true),
+            ),
+
+            const SizedBox(width: 32),
+
+            // Mode Switch (Cursor vs Direct Scroll)
+            _buildToolbarButton(
+              icon: _isCursorMode
+                  ? Icons.mouse_rounded
+                  : Icons.swap_vert_rounded,
+              label: _isCursorMode ? 'Cursor Mode' : 'Scroll Mode',
+              color: _isCursorMode
+                  ? const Color(0xFF3B82F6)
+                  : const Color(0xFF10B981),
               onTap: () {
                 setState(() {
-                  if (_cursorSpeed == 10.0) {
-                    _cursorSpeed = 16.0;
-                  } else if (_cursorSpeed == 16.0) {
-                    _cursorSpeed = 26.0;
-                  } else {
-                    _cursorSpeed = 10.0;
-                  }
+                  _isCursorMode = !_isCursorMode;
                 });
               },
             ),
-          const SizedBox(width: 8),
+            const SizedBox(width: 8),
 
-          // Zoom Out
-          _buildToolbarButton(
-            icon: Icons.zoom_out_rounded,
-            label: 'Zoom -',
-            onTap: () {
-              setState(() {
-                _zoomLevel = (_zoomLevel - 0.1).clamp(0.7, 1.5);
-              });
-              _applyZoom();
-            },
-          ),
-          const SizedBox(width: 8),
+            // Cursor Speed Switcher
+            if (_isCursorMode)
+              _buildToolbarButton(
+                icon: Icons.speed_rounded,
+                label:
+                    '${_cursorSpeed == 10.0
+                        ? "1x"
+                        : _cursorSpeed == 16.0
+                        ? "1.5x"
+                        : "2.5x"} Speed',
+                onTap: () {
+                  setState(() {
+                    if (_cursorSpeed == 10.0) {
+                      _cursorSpeed = 16.0;
+                    } else if (_cursorSpeed == 16.0) {
+                      _cursorSpeed = 26.0;
+                    } else {
+                      _cursorSpeed = 10.0;
+                    }
+                  });
+                },
+              ),
+            const SizedBox(width: 8),
 
-          // Zoom In
-          _buildToolbarButton(
-            icon: Icons.zoom_in_rounded,
-            label: 'Zoom +',
-            onTap: () {
-              setState(() {
-                _zoomLevel = (_zoomLevel + 0.1).clamp(0.7, 1.5);
-              });
-              _applyZoom();
-            },
-          ),
-          const SizedBox(width: 12),
+            // Zoom Out
+            _buildToolbarButton(
+              icon: Icons.zoom_out_rounded,
+              label: 'Zoom -',
+              onTap: () {
+                setState(() {
+                  _zoomLevel = (_zoomLevel - 0.1).clamp(0.7, 1.5);
+                });
+                _applyZoom();
+              },
+            ),
+            const SizedBox(width: 8),
 
-          // Close bar
-          IconButton(
-            icon: const Icon(Icons.close_rounded, color: Colors.white70),
-            tooltip: 'Hide Toolbar',
-            onPressed: () {
-              setState(() => _showToolbar = false);
-            },
-          ),
-        ],
+            // Zoom In
+            _buildToolbarButton(
+              icon: Icons.zoom_in_rounded,
+              label: 'Zoom +',
+              onTap: () {
+                setState(() {
+                  _zoomLevel = (_zoomLevel + 0.1).clamp(0.7, 1.5);
+                });
+                _applyZoom();
+              },
+            ),
+            const SizedBox(width: 12),
+
+            // Close bar
+            IconButton(
+              icon: const Icon(Icons.close_rounded, color: Colors.white70),
+              tooltip: 'Hide Toolbar',
+              onPressed: () {
+                setState(() => _showToolbar = false);
+              },
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildToolbarButton({
     required IconData icon,
@@ -1138,11 +1166,7 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
           gradient: RadialGradient(
             center: Alignment(0, -0.3),
             radius: 1.2,
-            colors: [
-              Color(0xFF131D33),
-              Color(0xFF090D18),
-              Color(0xFF04060B),
-            ],
+            colors: [Color(0xFF131D33), Color(0xFF090D18), Color(0xFF04060B)],
           ),
         ),
         child: SingleChildScrollView(
@@ -1168,7 +1192,9 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFE50914).withValues(alpha: 0.35),
+                          color: const Color(
+                            0xFFE50914,
+                          ).withValues(alpha: 0.35),
                           blurRadius: 36,
                           spreadRadius: 4,
                           offset: const Offset(0, 10),
@@ -1214,13 +1240,10 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                   // Primary Launch CTA Button
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () => _openUrl(initialUrl),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 20,
-                        ),
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Ink(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [Color(0xFFE50914), Color(0xFFB81D24)],
@@ -1230,38 +1253,50 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFE50914).withValues(alpha: 0.45),
+                              color: const Color(
+                                0xFFE50914,
+                              ).withValues(alpha: 0.45),
                               blurRadius: 24,
                               spreadRadius: 2,
                               offset: const Offset(0, 8),
                             ),
                           ],
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(
-                              Icons.play_circle_fill_rounded,
-                              size: 28,
-                              color: Colors.white,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => _openUrl(initialUrl),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 20,
                             ),
-                            SizedBox(width: 12),
-                            Text(
-                              'Launch Web Player',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                              ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Icon(
+                                  Icons.play_circle_fill_rounded,
+                                  size: 28,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Launch Web Player',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Icon(
+                                  Icons.open_in_new_rounded,
+                                  size: 20,
+                                  color: Colors.white70,
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 8),
-                            Icon(
-                              Icons.open_in_new_rounded,
-                              size: 20,
-                              color: Colors.white70,
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -1288,7 +1323,9 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF38BDF8).withValues(alpha: 0.15),
+                            color: const Color(
+                              0xFF38BDF8,
+                            ).withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
@@ -1352,7 +1389,9 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                                color: const Color(
+                                  0xFF10B981,
+                                ).withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(
@@ -1433,7 +1472,9 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                             OutlinedButton.icon(
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: const Color(0xFFE2E8F0),
-                                side: const BorderSide(color: Color(0xFF475569)),
+                                side: const BorderSide(
+                                  color: Color(0xFF475569),
+                                ),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 20,
                                   vertical: 14,
@@ -1457,10 +1498,14 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                           width: double.infinity,
                           padding: const EdgeInsets.all(22),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF090D16).withValues(alpha: 0.85),
+                            color: const Color(
+                              0xFF090D16,
+                            ).withValues(alpha: 0.85),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: const Color(0xFF334155).withValues(alpha: 0.7),
+                              color: const Color(
+                                0xFF334155,
+                              ).withValues(alpha: 0.7),
                             ),
                           ),
                           child: Column(
@@ -1502,9 +1547,7 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                                         color: Colors.white,
                                       ),
                                     ),
-                                    TextSpan(
-                                      text: 'Open the ',
-                                    ),
+                                    TextSpan(text: 'Open the '),
                                     TextSpan(
                                       text: 'Downloader',
                                       style: TextStyle(
@@ -1513,7 +1556,8 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                                       ),
                                     ),
                                     TextSpan(
-                                      text: ' app on your TV and type or click below:',
+                                      text:
+                                          ' app on your TV and type or click below:',
                                     ),
                                   ],
                                 ),
@@ -1546,7 +1590,8 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                                             color: Color(0xFF60A5FA),
                                             fontSize: 13,
                                             fontFamily: 'monospace',
-                                            decoration: TextDecoration.underline,
+                                            decoration:
+                                                TextDecoration.underline,
                                           ),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -1562,12 +1607,19 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                                       ),
                                       tooltip: 'Copy Link',
                                       onPressed: () {
-                                        Clipboard.setData(const ClipboardData(
-                                          text: 'https://github.com/vishnu32510/nungu_tv/releases/latest/download/NunguTV-AndroidTV-v1.0.0.apk',
-                                        ));
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        Clipboard.setData(
+                                          const ClipboardData(
+                                            text:
+                                                'https://github.com/vishnu32510/nungu_tv/releases/latest/download/NunguTV-AndroidTV-v1.0.0.apk',
+                                          ),
+                                        );
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
                                           const SnackBar(
-                                            content: Text('APK download link copied to clipboard!'),
+                                            content: Text(
+                                              'APK download link copied to clipboard!',
+                                            ),
                                             backgroundColor: Color(0xFF10B981),
                                             duration: Duration(seconds: 2),
                                           ),
@@ -1596,7 +1648,8 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                                       ),
                                     ),
                                     TextSpan(
-                                      text: 'Click the green button above to download the APK onto a USB drive and plug it into your TV.',
+                                      text:
+                                          'Click the green button above to download the APK onto a USB drive and plug it into your TV.',
                                     ),
                                   ],
                                 ),
@@ -1641,10 +1694,7 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                 ],
               ),
               clipBehavior: Clip.antiAlias,
-              child: Image.asset(
-                'assets/icon/app_icon.png',
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset('assets/icon/app_icon.png', fit: BoxFit.cover),
             ),
             const SizedBox(width: 12),
             const Text(
@@ -1682,15 +1732,39 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
           Row(
             children: [
               TextButton.icon(
-                icon: const Icon(Icons.android_rounded, size: 16, color: Color(0xFF10B981)),
-                label: const Text('Android APK', style: TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.bold)),
-                onPressed: () => _openUrl('https://github.com/vishnu32510/nungu_tv/releases/latest/download/NunguTV-AndroidTV-v1.0.0.apk'),
+                icon: const Icon(
+                  Icons.android_rounded,
+                  size: 16,
+                  color: Color(0xFF10B981),
+                ),
+                label: const Text(
+                  'Android APK',
+                  style: TextStyle(
+                    color: Color(0xFF10B981),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () => _openUrl(
+                  'https://github.com/vishnu32510/nungu_tv/releases/latest/download/NunguTV-AndroidTV-v1.0.0.apk',
+                ),
               ),
               const SizedBox(width: 6),
               TextButton.icon(
-                icon: const Icon(Icons.tv_rounded, size: 16, color: Color(0xFF38BDF8)),
-                label: const Text('LG webOS IPK', style: TextStyle(color: Color(0xFF38BDF8), fontWeight: FontWeight.bold)),
-                onPressed: () => _openUrl('https://github.com/vishnu32510/nungu_tv/releases/latest/download/NunguTV-webOS-v1.0.0.ipk'),
+                icon: const Icon(
+                  Icons.tv_rounded,
+                  size: 16,
+                  color: Color(0xFF38BDF8),
+                ),
+                label: const Text(
+                  'LG webOS IPK',
+                  style: TextStyle(
+                    color: Color(0xFF38BDF8),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () => _openUrl(
+                  'https://github.com/vishnu32510/nungu_tv/releases/latest/download/NunguTV-webOS-v1.0.0.ipk',
+                ),
               ),
               const SizedBox(width: 8),
               TextButton(
@@ -1745,15 +1819,18 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
               color: const Color(0xFF161F30),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
-                side: const BorderSide(
-                  color: Color(0xFF2A3A54),
-                ),
+                side: const BorderSide(color: Color(0xFF2A3A54)),
               ),
               child: InkWell(
-                onTap: () => _openUrl('https://einthusan.tv/movie/browse/?lang=${lang["code"]}'),
+                onTap: () => _openUrl(
+                  'https://einthusan.tv/movie/browse/?lang=${lang["code"]}',
+                ),
                 borderRadius: BorderRadius.circular(10),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -1824,23 +1901,15 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
         const Text(
           'Nungu TV is an independent client and media portal. We do not host, store, or broadcast any video streams on our servers. All video media is streamed directly from public third-party web servers.',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Color(0xFF475569),
-            fontSize: 12,
-            height: 1.5,
-          ),
+          style: TextStyle(color: Color(0xFF475569), fontSize: 12, height: 1.5),
         ),
         const SizedBox(height: 8),
         const Text(
           '© 2026 Nungu TV. All trademarks belong to their respective owners.',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Color(0xFF334155),
-            fontSize: 12,
-          ),
+          style: TextStyle(color: Color(0xFF334155), fontSize: 12),
         ),
       ],
     );
   }
-
 }
