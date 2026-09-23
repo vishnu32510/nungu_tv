@@ -21,9 +21,7 @@ void main() async {
       DeviceOrientation.landscapeRight,
     ]);
 
-    await SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.immersiveSticky,
-    );
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   runApp(const EinthusanTvApp());

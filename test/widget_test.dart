@@ -94,7 +94,9 @@ void main() {
     WebViewPlatform.instance = TestWebViewPlatform();
   });
 
-  testWidgets('Einthusan TV app renders TvBrowserScreen', (WidgetTester tester) async {
+  testWidgets('Einthusan TV app renders TvBrowserScreen', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const EinthusanTvApp());
     expect(find.byType(TvBrowserScreen), findsOneWidget);
   });
