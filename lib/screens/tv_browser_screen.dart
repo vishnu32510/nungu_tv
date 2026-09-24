@@ -1214,13 +1214,9 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                   // Primary Launch CTA Button
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () => _openUrl(initialUrl),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 20,
-                        ),
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Ink(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [Color(0xFFE50914), Color(0xFFB81D24)],
@@ -1237,31 +1233,41 @@ class _TvBrowserScreenState extends State<TvBrowserScreen>
                             ),
                           ],
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(
-                              Icons.play_circle_fill_rounded,
-                              size: 28,
-                              color: Colors.white,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => _openUrl(initialUrl),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 20,
                             ),
-                            SizedBox(width: 12),
-                            Text(
-                              'Launch Web Player',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                              ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Icon(
+                                  Icons.play_circle_fill_rounded,
+                                  size: 28,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Launch Web Player',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Icon(
+                                  Icons.open_in_new_rounded,
+                                  size: 20,
+                                  color: Colors.white70,
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 8),
-                            Icon(
-                              Icons.open_in_new_rounded,
-                              size: 20,
-                              color: Colors.white70,
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
